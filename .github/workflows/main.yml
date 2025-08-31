@@ -1,6 +1,9 @@
 name: Data Pipeline
 
 on:
+  push:                   # Déclenchement automatique à chaque push
+    branches:
+      - main
   schedule:
     - cron: "0 9 * * *"   # Exécution automatique tous les jours à 9h UTC
   workflow_dispatch:       # Exécution manuelle possible
@@ -27,7 +30,7 @@ jobs:
 
       # Étape 4 : Lancer le spider Scrapy
       - name: Run spider
-        run: scrapy runspider src/spider.py -o data/cleaned_data_paris50_fr.csv.csv -t csv
+        run: scrapy runspider src/spider.py -o data/cleaned_data_paris50_fr.csv -t csv
 
       # Étape 5 : Lancer le script de nettoyage
       - name: Run cleaner
@@ -39,6 +42,5 @@ jobs:
           git config --global user.name "github-actions"
           git config --global user.email "actions@github.com"
           git add data/cleaned_data_paris50_fr.csv data/cleaned_data_final.csv
-          git commit -m "Mise à jour automatique des données"
+          git commit -m "Mise à jour automatique des données" || echo "No changes to commit"
           git push
-
