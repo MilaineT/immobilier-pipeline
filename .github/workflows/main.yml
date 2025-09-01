@@ -1,7 +1,7 @@
 name: Data Pipeline
 
 on:
-  push:                   # Déclenchement automatique à chaque push sur main
+  push:                   # Déclenchement à chaque push
     branches:
       - main
   schedule:
@@ -21,7 +21,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.13.7'
+          python-version: '3.13'
 
       # Étape 3 : Installer les dépendances nécessaires
       - name: Install dependencies
@@ -30,11 +30,11 @@ jobs:
 
       # Étape 4 : Lancer le spider Scrapy
       - name: Run spider
-        run: scrapy runspider spider.py -o data/cleaned_data_paris50_fr.csv -t csv
+        run: scrapy runspider src/spider.py -o data/cleaned_data_paris50_fr.csv -t csv
 
       # Étape 5 : Lancer le script de nettoyage
       - name: Run cleaner
-        run: python cleaner.py
+        run: python src/cleaner.py
 
       # Étape 6 : Commit et push les fichiers de données mis à jour
       - name: Commit cleaned data
@@ -43,5 +43,5 @@ jobs:
           git config --global user.email "actions@github.com"
           git add data/cleaned_data_paris50_fr.csv data/cleaned_data_final.csv
           git commit -m "Mise à jour automatique des données" || echo "No changes to commit"
+          git pull --rebase origin main
           git push
-
