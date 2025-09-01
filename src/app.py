@@ -20,6 +20,7 @@ df = load_data()
 
 # Vérifier si le DataFrame est vide
 if df.empty:
+    st.error("Le fichier CSV est vide ou introuvable.")
     st.stop()
 
 # -------------------
@@ -78,45 +79,45 @@ st.subheader("Visualisations supplémentaires")
 
 # 5.1 Nuage de points Surface vs Prix
 fig_scatter = px.scatter(
-    filtered, 
-    x="surface_m2", 
-    y="price_eur", 
-    title="Surface vs Prix", 
+    filtered,
+    x="surface_m2",
+    y="price_eur",
+    title="Surface vs Prix",
     labels={"surface_m2": "Surface (m²)", "price_eur": "Prix (€)"},
     color="rooms_n" if "rooms_n" in filtered.columns else None
 )
 st.plotly_chart(fig_scatter)
 
-# 5.2 Box plot du prix par code postal
-if "code_postal" in filtered.columns:
+# 5.2 Box plot du prix par localisation
+if "location" in filtered.columns:
     fig_box = px.box(
-        filtered, 
-        x="code_postal", 
-        y="price_eur", 
-        title="Distribution des prix par code postal",
-        labels={"code_postal": "Code Postal", "price_eur": "Prix (€)"}
+        filtered,
+        x="location",
+        y="price_eur",
+        title="Distribution des prix par localisation",
+        labels={"location": "Localisation", "price_eur": "Prix (€)"}
     )
     st.plotly_chart(fig_box)
 
-# 5.3 Prix moyen par code postal (bar plot)
-if "code_postal" in filtered.columns:
-    prix_moyen_cp = filtered.groupby("code_postal")["price_eur"].mean().sort_values(ascending=False)
+# 5.3 Prix moyen par localisation (bar plot)
+if "location" in filtered.columns:
+    prix_moyen_loc = filtered.groupby("location")["price_eur"].mean().sort_values(ascending=False)
     fig_bar_mean = px.bar(
-        prix_moyen_cp, 
-        x=prix_moyen_cp.index, 
-        y=prix_moyen_cp.values, 
-        title="Prix moyen par code postal",
-        labels={"x": "Code Postal", "y": "Prix moyen (€)"}
+        prix_moyen_loc,
+        x=prix_moyen_loc.index,
+        y=prix_moyen_loc.values,
+        title="Prix moyen par localisation",
+        labels={"x": "Localisation", "y": "Prix moyen (€)"}
     )
     st.plotly_chart(fig_bar_mean)
 
-# 5.4 Nombre d’annonces par code postal
-if "code_postal" in filtered.columns:
-    annonces_par_cp = filtered["code_postal"].value_counts().sort_values(ascending=False)
+# 5.4 Nombre d’annonces par localisation
+if "location" in filtered.columns:
+    annonces_par_loc = filtered["location"].value_counts().sort_values(ascending=False)
     fig_hist_count = px.bar(
-        x=annonces_par_cp.index, 
-        y=annonces_par_cp.values,
-        title="Nombre d'annonces par code postal",
-        labels={"x": "Code Postal", "y": "Nombre d'annonces"}
+        x=annonces_par_loc.index,
+        y=annonces_par_loc.values,
+        title="Nombre d'annonces par localisation",
+        labels={"x": "Localisation", "y": "Nombre d'annonces"}
     )
     st.plotly_chart(fig_hist_count)
