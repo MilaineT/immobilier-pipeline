@@ -26,21 +26,17 @@ jobs:
       # Étape 3 : Installer les dépendances nécessaires
       - name: Install dependencies
         run: |
-          pip install pandas scrapy
+          pip install pandas
 
-      # Étape 4 : Créer le dossier data 
-      - name: Create data folder
+      # Étape 4 : Vérifier que le dossier data existe
+      - name: Ensure data folder exists
         run: mkdir -p data
 
-      # Étape 5 : Lancer le spider Scrapy
-      - name: Run spider
-        run: scrapy runspider src/spider.py -o data/cleaned_data_paris50_fr.csv -t csv
-
-      # Étape 6 : Lancer le script de nettoyage
+      # Étape 5 : Lancer le script de nettoyage
       - name: Run cleaner
         run: python src/cleaner.py
 
-      # Étape 7 : Commit et push les fichiers de données mis à jour
+      # Étape 6 : Commit et push les fichiers de données mis à jour
       - name: Commit cleaned data
         run: |
           git config --global user.name "github-actions"
