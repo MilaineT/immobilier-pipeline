@@ -1,12 +1,12 @@
 name: Data Pipeline
 
 on:
-  push:
+  push:                   # Déclenchement à chaque push
     branches:
-      - main            # Déclenchement automatique à chaque push sur main
+      - main
   schedule:
-    - cron: "0 9 * * *" # Exécution automatique tous les jours à 9h UTC
-  workflow_dispatch:    # Exécution manuelle possible
+    - cron: "0 9 * * *"   # Exécution automatique tous les jours à 9h UTC
+  workflow_dispatch:       # Exécution manuelle possible
 
 jobs:
   build:
@@ -26,11 +26,11 @@ jobs:
       # Étape 3 : Installer les dépendances nécessaires
       - name: Install dependencies
         run: |
-          pip install pandas
+          pip install pandas scrapy
 
-      # Étape 4 : Vérifier que le dossier data existe
-      - name: Ensure data folder exists
-        run: mkdir -p data
+      # Étape 4 : Lancer le spider Scrapy
+      - name: Run spider
+        run: scrapy runspider src/spider.py -o data/cleaned_data_paris50_fr.csv -t csv
 
       # Étape 5 : Lancer le script de nettoyage
       - name: Run cleaner
