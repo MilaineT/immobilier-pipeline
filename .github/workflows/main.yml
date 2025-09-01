@@ -1,7 +1,7 @@
 name: Data Pipeline
 
 on:
-  push:                   # Déclenchement à chaque push
+  push:                   # Déclenchement automatique à chaque push 
     branches:
       - main
   schedule:
@@ -28,15 +28,19 @@ jobs:
         run: |
           pip install pandas scrapy
 
-      # Étape 4 : Lancer le spider Scrapy
+      # Étape 4 : Créer le dossier data 
+      - name: Create data folder
+        run: mkdir -p data
+
+      # Étape 5 : Lancer le spider Scrapy
       - name: Run spider
         run: scrapy runspider src/spider.py -o data/cleaned_data_paris50_fr.csv -t csv
 
-      # Étape 5 : Lancer le script de nettoyage
+      # Étape 6 : Lancer le script de nettoyage
       - name: Run cleaner
         run: python src/cleaner.py
 
-      # Étape 6 : Commit et push les fichiers de données mis à jour
+      # Étape 7 : Commit et push les fichiers de données mis à jour
       - name: Commit cleaned data
         run: |
           git config --global user.name "github-actions"
