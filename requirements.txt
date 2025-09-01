@@ -1,0 +1,13 @@
+# App principale (Streamlit + data)
+streamlit
+pandas
+numpy
+plotly
+altair
+
+# Web scraping 
+scrapy
+beautifulsoup4
+
+#  Pour éviter les avertissements éventuels 
+packaging
