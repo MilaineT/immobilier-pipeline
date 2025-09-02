@@ -15,7 +15,8 @@ def load_data():
     except Exception as e:
         st.error(f"Erreur lors du chargement des données : {e}")
         return pd.DataFrame()
-
+    
+st.cache_data.clear()
 df = load_data()
 
 # Vérifier si le DataFrame est vide
