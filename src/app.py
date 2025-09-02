@@ -12,7 +12,7 @@ URL = "https://raw.githubusercontent.com/MilaineT/immobilier-pipeline/main/data/
 def load_data():
     try:
         # Lecture avec gestion d'encodage + détection colonnes
-        df = pd.read_csv(URL, encoding="utf-8-sig", quotechar='"')
+        df = pd.read_csv(URL, sep=';', encoding="utf-8-sig", quotechar='"')
         
         if "location" not in df.columns:
             st.error(f"❌ Colonne 'location' non trouvée. Colonnes détectées : {df.columns.tolist()}")
