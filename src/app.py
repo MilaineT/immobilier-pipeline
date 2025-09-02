@@ -75,7 +75,6 @@ st.metric("💶 Prix moyen", f"{filtered['price_eur'].mean():,.0f} €")
 
 # Histogramme prix avec étiquettes
 fig_price_hist = px.histogram(filtered, x="price_eur", nbins=30, title="Répartition des prix")
-fig_price_hist.update_traces(texttemplate="%{y}", textposition="outside")
 st.plotly_chart(fig_price_hist)
 
 # Tableau filtré
