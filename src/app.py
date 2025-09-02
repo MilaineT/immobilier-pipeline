@@ -11,13 +11,13 @@ URL = "https://raw.githubusercontent.com/MilaineT/immobilier-pipeline/main/data/
 @st.cache_data
 def load_data():
     try:
-        # Lecture avec gestion d'encodage + détection colonnes
         df = pd.read_csv(URL, sep=';', encoding="utf-8-sig", quotechar='"')
         
         if "location" not in df.columns:
             st.error(f"❌ Colonne 'location' non trouvée. Colonnes détectées : {df.columns.tolist()}")
             return pd.DataFrame()
         
+        # Forcer la localisation en texte
         df["location"] = df["location"].astype(str)
         return df
     except Exception as e:
@@ -38,7 +38,7 @@ if df.empty:
 # 2. Interface utilisateur
 # -------------------
 
-st.title("Tableau de bord immobilier")
+st.title("🏡 Tableau de bord immobilier")
 st.write("Analyse des annonces immobilières")
 
 # Filtres dynamiques
@@ -71,15 +71,19 @@ if "rooms_n" in df.columns:
 # 4. Visualisations
 # -------------------
 
-st.metric("Prix moyen", f"{filtered['price_eur'].mean():,.0f} €")
+st.metric("💶 Prix moyen", f"{filtered['price_eur'].mean():,.0f} €")
 
+# Histogramme prix avec étiquettes
 fig_price_hist = px.histogram(filtered, x="price_eur", nbins=30, title="Répartition des prix")
+fig_price_hist.update_traces(texttemplate="%{y}", textposition="outside")
 st.plotly_chart(fig_price_hist)
 
+# Tableau filtré
 st.dataframe(filtered)
 
-st.subheader("Visualisations supplémentaires")
+st.subheader("📊 Visualisations supplémentaires")
 
+# Scatter Surface vs Prix
 fig_scatter = px.scatter(
     filtered,
     x="surface_m2",
@@ -94,6 +98,7 @@ st.plotly_chart(fig_scatter)
 # Box, bar & count plots par localisation
 # -------------------
 if "location" in filtered.columns:
+    # Distribution des prix par localisation
     fig_box = px.box(
         filtered,
         x="location",
@@ -103,6 +108,7 @@ if "location" in filtered.columns:
     )
     st.plotly_chart(fig_box)
 
+    # Prix moyen par localisation (avec étiquettes)
     prix_moyen_loc = filtered.groupby("location")["price_eur"].mean().sort_values(ascending=False)
     fig_bar_mean = px.bar(
         x=prix_moyen_loc.index,
@@ -110,8 +116,10 @@ if "location" in filtered.columns:
         title="Prix moyen par localisation",
         labels={"x": "Localisation", "y": "Prix moyen (€)"}
     )
+    fig_bar_mean.update_traces(text=prix_moyen_loc.values.round(0), textposition="outside")
     st.plotly_chart(fig_bar_mean)
 
+    # Nombre d'annonces par localisation (avec étiquettes)
     annonces_par_loc = filtered["location"].value_counts().sort_values(ascending=False)
     fig_hist_count = px.bar(
         x=annonces_par_loc.index,
@@ -119,6 +127,7 @@ if "location" in filtered.columns:
         title="Nombre d'annonces par localisation",
         labels={"x": "Localisation", "y": "Nombre d'annonces"}
     )
+    fig_hist_count.update_traces(text=annonces_par_loc.values, textposition="outside")
     st.plotly_chart(fig_hist_count)
 else:
     st.warning("La colonne 'location' est absente des données filtrées.")
