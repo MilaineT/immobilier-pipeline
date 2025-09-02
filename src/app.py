@@ -11,11 +11,15 @@ URL = "https://raw.githubusercontent.com/MilaineT/immobilier-pipeline/main/data/
 @st.cache_data
 def load_data():
     try:
-        return pd.read_csv(URL)
+        # Prise en compte des champs texte contenant des virgules
+        df = pd.read_csv(URL, quotechar='"')
+        df["location"] = df["location"].astype(str)
+        return df
     except Exception as e:
         st.error(f"Erreur lors du chargement des données : {e}")
         return pd.DataFrame()
-    
+
+# Nettoyage du cache pour recharger les données corrigées
 st.cache_data.clear()
 df = load_data()
 
