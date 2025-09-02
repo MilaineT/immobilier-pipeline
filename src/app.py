@@ -8,7 +8,7 @@ import plotly.express as px
 
 URL = "https://raw.githubusercontent.com/MilaineT/immobilier-pipeline/main/data/cleaned_data_final.csv"
 
-st.cache_data
+#st.cache_data
 def load_data():
     try:
         # Prise en compte des champs texte contenant des virgules
