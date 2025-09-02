@@ -12,7 +12,7 @@ URL = "https://raw.githubusercontent.com/MilaineT/immobilier-pipeline/main/data/
 def load_data():
     try:
         # Prise en compte des champs texte contenant des virgules
-        df = pd.read_csv(URL, quotechar='"')
+        df = pd.read_csv(URL, quotechar='"', encoding='ISO-8859-1')
         df["location"] = df["location"].astype(str)
         return df
     except Exception as e:
